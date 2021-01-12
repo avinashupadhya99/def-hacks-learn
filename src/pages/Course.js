@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { Route, Switch } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import '../styles/course.css';
 import { Row, Col } from 'react-bootstrap';
 import Sidebar from '../components/common/CourseSidebar';
@@ -8,6 +9,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import VideoPlayer from './Course-Components/videoPlayer';
 import CodePlayground from './Course-Components/codePlayground';
 import QuizPanel from './Course-Components/quizPanel';
+import AppContext from '../context/AppContext';
 
 // import { db } from '../firebase';
 
@@ -18,18 +20,40 @@ const videoObj = {
   createdDate: 'Jan 1st, 2021',
 };
 
-function Course() {
+function Course({ match }) {
+  const { user, courses } = useContext(AppContext);
+  const history = useHistory();
+
   const [navbarHeight, setNavbarHeight] = useState('75px');
+  const [courseData, setCourseData] = useState('75px');
 
   useEffect(() => {
     setNavbarHeight(document.getElementById('app_navbar').style.height);
-    // console.log('Course');
-    // db.collection('Courses')
-    //   .get()
-    //   .then((snapshot) => {
-    //     console.log('Test');
-    //   });
-  }, []);
+    if (courses.length > 0) {
+      const courseName = match.params.id;
+      console.log(courseName);
+      if (courseName) {
+        console.log(courses);
+        const currentCourseData = courses.filter((course) => {
+          return course.name === courseName;
+        });
+        console.log(currentCourseData);
+        if (currentCourseData && currentCourseData.length > 0) {
+          setCourseData(currentCourseData);
+        } else {
+          history.push('/');
+        }
+      } else {
+        history.push('/');
+      }
+    }
+  }, [courses]);
+
+  useEffect(() => {
+    if (!user) {
+      history.push('/signin');
+    }
+  }, [user]);
 
   return (
     <div

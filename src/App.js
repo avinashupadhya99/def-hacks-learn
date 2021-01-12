@@ -40,7 +40,7 @@ function App() {
             <Route exact path="/ExistUser" component={ExistUser} />
             <Route exact path="/account" component={ExistAccount} />
             <Route exact path="/ExistActivity" component={ExistActivity} />
-            <Route exact path="/course" component={Course} />
+            <Route exact path="/course/:id" component={Course} />
           </>
         ) : (
           <>
